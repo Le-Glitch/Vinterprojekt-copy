@@ -15,21 +15,22 @@ public class Game
         player p = new player();
         platform plat = new platform();
 
-        
+
 
         while (!Raylib.WindowShouldClose())
         {
-            plat.Level();
+            plat.Level(p.deaths);
             p.Movement(plat.platforms);
 
             // Sets the players starting position
             if (plat.playerAtStart == false)
             {
-            p.position = plat.startPos;
+                p.position = plat.startPos;
 
-            plat.playerAtStart = true;
+                plat.playerAtStart = true;
             }
 
+            plat.playerAtStart = p.death();
 
             Raylib.BeginDrawing();
 
@@ -40,14 +41,11 @@ public class Game
 
             Raylib.EndDrawing();
 
-            if(Raylib.CheckCollisionPointRec(p.position, plat.winArea))
+            if (Raylib.CheckCollisionPointRec(p.position, plat.winArea))
             {
                 plat.level++;
                 plat.playerAtStart = false;
             }
         }
-
-
     }
-
 }

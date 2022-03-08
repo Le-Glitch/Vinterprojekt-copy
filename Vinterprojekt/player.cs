@@ -6,7 +6,7 @@ using Raylib_cs;
 public class player
 {
     float gravity;
-    public Texture2D playerTexture; // = Raylib.LoadTexture("player-right1.png");
+    public Texture2D playerTexture;
 
     public Vector2 position = new Vector2(1, 1);
     Vector2 speed = new Vector2(0, 10);
@@ -18,8 +18,10 @@ public class player
     int fpsPerFrame = 15;
     bool isJumping = false;
     string direction = "right";
-    
-    
+
+    public int deaths = 0;
+
+
 
 
 
@@ -45,26 +47,26 @@ public class player
     // All code for player movement
     public void Movement(List<Rectangle> platforms)
     {
-        playerX();
+        PlayerX();
         xCollision();
-        
-        if(collisionCheckHorizontal && Raylib.IsKeyDown(KeyboardKey.KEY_X))
+
+        if (collisionCheckHorizontal && Raylib.IsKeyPressed(KeyboardKey.KEY_X))
         {
             WallJump();
         }
 
-        playerY();
+        PlayerY();
 
-        gravitySim();
+        GravitySim();
         yCollision();
-        
+
 
         speed.X = 0;
 
         // Code to change the players x-axis
-        void playerX()
+        void PlayerX()
         {
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && position.X < Raylib.GetScreenWidth() - playerTexture.width)
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
             {
                 if (!isJumping)
                 {
@@ -87,7 +89,7 @@ public class player
                 playerTexture = rightAnimation[0];
             }
 
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && position.X > 0)
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
             {
                 if (!isJumping)
                 {
@@ -110,7 +112,7 @@ public class player
 
             position.X += speed.X;
 
-            
+
         }
 
         // Checks collisions for x-axis
@@ -140,7 +142,7 @@ public class player
         }
 
         // Code to change the players y-axis
-        void playerY()
+        void PlayerY()
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_X) && !isJumping)
             {
@@ -160,10 +162,10 @@ public class player
                 {
                     playerTexture = leftAnimation[1];
                 }
-            }   
+            }
         }
 
-        void gravitySim()
+        void GravitySim()
         {
             if (position.Y < Raylib.GetScreenHeight() - playerTexture.height)
             {
@@ -206,14 +208,27 @@ public class player
 
             position.Y -= speed.Y;
 
-            if(direction == "right")
-            {    
-                position.X -= speed.X;    
+            if (direction == "right")
+            {
+                position.X -= speed.X;
             }
-            else if(direction == "left")
+            else if (direction == "left")
             {
                 position.X += speed.X;
             }
+        }
+    }
+
+    public bool death()
+    {
+        if (position.Y + playerTexture.height >= Raylib.GetScreenHeight())
+        {
+            deaths++;
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 
